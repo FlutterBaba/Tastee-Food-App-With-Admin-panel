@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "838055847722",
+    "project_id": "tasteefood-40c93",
+    "storage_bucket": "tasteefood-40c93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838055847722:android:c5833e8b52311b5d99a053",
+        "android_client_info": {
+          "package_name": "com.example.tasteefood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "838055847722-eae361oubnub79j859jqtcjdqm63ogcd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApegw5jSDhW52Ib5a5qXUJIFSZtIwv_EY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "838055847722-eae361oubnub79j859jqtcjdqm63ogcd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
