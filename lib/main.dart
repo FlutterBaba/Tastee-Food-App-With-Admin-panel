@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasteefood/pages/signup/components/signup_auth_provider.dart';
 import 'pages/signup/signup_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -21,6 +24,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Testee Food',
         theme: ThemeData(
+          appBarTheme: AppBarTheme(
+              iconTheme: IconThemeData(
+            color: Colors.black,
+          )),
           // This is the theme of your application.
           //
           // Try running your application with "flutter run". You'll see the

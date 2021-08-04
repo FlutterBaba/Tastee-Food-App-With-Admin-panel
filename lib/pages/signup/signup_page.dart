@@ -70,17 +70,21 @@ class _SignupPageState extends State<SignupPage> {
               ),
               Column(
                 children: [
-                  MyButton(
-                    onPressed: () {
-                      signupAuthProvider.signupVaidation(
-                        fullName: fullName,
-                        context: context,
-                        emailAdress: emailAddress,
-                        password: password,
-                      );
-                    },
-                    text: "SIGN UP",
-                  ),
+                  signupAuthProvider.loading == false
+                      ? MyButton(
+                          onPressed: () {
+                            signupAuthProvider.signupVaidation(
+                              fullName: fullName,
+                              context: context,
+                              emailAdress: emailAddress,
+                              password: password,
+                            );
+                          },
+                          text: "SIGN UP",
+                        )
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        ),
                   SizedBox(
                     height: 20,
                   ),
