@@ -45,7 +45,7 @@ class SignupAuthProvider with ChangeNotifier {
         ),
       );
       return;
-    } else if (password.text.length <= 8) {
+    } else if (password.text.length < 8) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Password must be 8"),

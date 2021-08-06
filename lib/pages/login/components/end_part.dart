@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class EndPart extends StatelessWidget {
-  const EndPart({Key? key}) : super(key: key);
+  final void Function()? onPressed;
+  const EndPart({
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         MyButton(
-          onPressed: () {},
+          onPressed: onPressed,
           text: "LOG IN",
         ),
         SizedBox(

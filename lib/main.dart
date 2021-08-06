@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasteefood/pages/login/components/login_auth_provider.dart';
 import 'package:tasteefood/pages/signup/components/signup_auth_provider.dart';
 import 'pages/signup/signup_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,7 +19,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => SignupAuthProvider(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LoginAuthProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
