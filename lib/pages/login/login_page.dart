@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             //end part
             EndPart(
+              loading: loginAuthProvider.loading,
               onPressed: () {
                 loginAuthProvider.loginPageVaidation(
                   emailAdress: email,

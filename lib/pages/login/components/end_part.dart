@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tasteefood/pages/signup/signup_page.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class EndPart extends StatelessWidget {
   final void Function()? onPressed;
+  final bool loading;
   const EndPart({
+    required this.loading,
     required this.onPressed,
     Key? key,
   }) : super(key: key);
@@ -12,10 +15,12 @@ class EndPart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        MyButton(
-          onPressed: onPressed,
-          text: "LOG IN",
-        ),
+        loading == true
+            ? CircularProgressIndicator()
+            : MyButton(
+                onPressed: onPressed,
+                text: "LOG IN",
+              ),
         SizedBox(
           height: 20,
         ),
@@ -23,7 +28,16 @@ class EndPart extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Don't have an account?\t\t"),
-            Text("SIGN UP"),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SignupPage(),
+                  ),
+                );
+              },
+              child: Text("SIGN UP"),
+            ),
           ],
         )
       ],

@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasteefood/pages/home/home_page.dart';
 
 class LoginAuthProvider with ChangeNotifier {
   static Pattern pattern =
@@ -7,6 +9,8 @@ class LoginAuthProvider with ChangeNotifier {
   RegExp regExp = RegExp(LoginAuthProvider.pattern.toString());
 
   bool loading = false;
+
+  UserCredential? userCredential;
 
   void loginPageVaidation(
       {required TextEditingController? emailAdress,
@@ -40,6 +44,44 @@ class LoginAuthProvider with ChangeNotifier {
         ),
       );
       return;
-    } else {}
+    } else {
+      try {
+        loading = true;
+        notifyListeners();
+        userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+          email: emailAdress.text,
+          password: password.text,
+        )
+          .then(
+          (value) async {
+            loading = false;
+            notifyListeners();
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
+          },
+        );
+        notifyListeners();
+      } on FirebaseAuthException catch (e) {
+        loading = false;
+        notifyListeners();
+        if (e.code == "user-not-found") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("user-not-found"),
+            ),
+          );
+        } else if (e.code == "wrong-password") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("wrong-password"),
+            ),
+          );
+        }
+      }
+    }
   }
 }
