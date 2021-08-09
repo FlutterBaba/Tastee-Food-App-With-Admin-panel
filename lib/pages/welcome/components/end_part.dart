@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tasteefood/appColors/app_colors.dart';
+import 'package:tasteefood/pages/login/login_page.dart';
+import 'package:tasteefood/pages/signup/signup_page.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class EndPart extends StatelessWidget {
@@ -9,7 +12,13 @@ class EndPart extends StatelessWidget {
     return Column(
       children: [
         MyButton(
-          onPressed: (){},
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => LoginPage(),
+              ),
+            );
+          },
           text: "LOG IN",
         ),
         SizedBox(
@@ -17,11 +26,17 @@ class EndPart extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            print("Click");
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => SignupPage(),
+              ),
+            );
           },
           child: Text(
             "SIGNUP",
-            style: TextStyle(color: Color(0xff797b7a)),
+            style: TextStyle(
+              color: AppColors.KgreyColor,
+            ),
           ),
         )
       ],

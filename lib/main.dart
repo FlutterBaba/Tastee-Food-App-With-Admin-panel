@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasteefood/pages/home/home_page.dart';
 import 'package:tasteefood/pages/login/components/login_auth_provider.dart';
 import 'package:tasteefood/pages/signup/components/signup_auth_provider.dart';
-import 'pages/signup/signup_page.dart';
+import 'package:tasteefood/pages/welcome/welcome_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -43,7 +45,16 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: SignupPage(),
+        home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, userSnp) {
+            if (userSnp.hasData) {
+              return HomePage();
+            }
+            return WelcomePage();
+          },
+        ),
+        // home: SignupPage(),
       ),
     );
   }
