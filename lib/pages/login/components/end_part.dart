@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tasteefood/pages/signup/signup_page.dart';
+import 'package:tasteefood/route/routing_page.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class EndPart extends StatelessWidget {
@@ -10,7 +11,6 @@ class EndPart extends StatelessWidget {
     required this.onPressed,
     Key? key,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,10 +30,9 @@ class EndPart extends StatelessWidget {
             Text("Don't have an account?\t\t"),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SignupPage(),
-                  ),
+                RoutingPage.goTonext(
+                  context: context,
+                  navigateTo: SignupPage(),
                 );
               },
               child: Text("SIGN UP"),

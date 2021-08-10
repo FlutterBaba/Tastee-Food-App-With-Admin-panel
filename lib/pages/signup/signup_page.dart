@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasteefood/pages/login/login_page.dart';
 import 'package:tasteefood/pages/signup/components/signup_auth_provider.dart';
+import 'package:tasteefood/route/routing_page.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class SignupPage extends StatefulWidget {
@@ -95,10 +96,9 @@ class _SignupPageState extends State<SignupPage> {
                       Text("Already have an account?\t\t"),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => LoginPage(),
-                            ),
+                          RoutingPage.goTonext(
+                            context: context,
+                            navigateTo: LoginPage(),
                           );
                         },
                         child: Text("LOGIN"),
