@@ -1,8 +1,11 @@
-import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasteefood/appColors/app_colors.dart';
+import 'package:tasteefood/model/user_model.dart';
 import 'package:tasteefood/widgets/build_drawer.dart';
+
+late UserModel userModel;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,8 +15,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Future getCurrentUserDataFunction() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then(
+      (DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          userModel = UserModel.fromDocument(documentSnapshot);
+        } else {
+          print("Document does not exist the database");
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    getCurrentUserDataFunction();
     return Scaffold(
       drawer: BuildDrawer(),
       appBar: AppBar(
@@ -112,7 +132,6 @@ class _HomePageState extends State<HomePage> {
 
 class SingleProduct extends StatelessWidget {
   const SingleProduct({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Column(

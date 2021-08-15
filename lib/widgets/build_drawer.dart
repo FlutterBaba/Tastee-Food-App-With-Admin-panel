@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasteefood/pages/home/home_page.dart';
 import 'package:tasteefood/pages/login/login_page.dart';
 
 class BuildDrawer extends StatelessWidget {
@@ -14,10 +15,10 @@ class BuildDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.purple,
             ),
-            accountName: Text("Yaqoob Developer"),
-            accountEmail: Text("yaqoobkafeel580@gmail.com"),
+            accountName: Text(userModel.fullName),
+            accountEmail: Text(userModel.emailAddress),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage("images/logo.jpg"),
+              backgroundImage: AssetImage("images/non_profile.jpg"),
             ),
           ),
           ListTile(
