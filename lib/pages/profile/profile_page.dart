@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:tasteefood/pages/home/home_page.dart';
+import 'package:tasteefood/widgets/my_button.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
- Widget textFromField({required String hintText}) {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  bool isEdit = false;
+
+  Widget textFromField({required String hintText}) {
     return Container(
       height: 50,
       width: double.infinity,
@@ -18,15 +26,92 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  Widget nonEditTextField() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              backgroundImage: AssetImage("images/non_profile.jpg"),
+              radius: 50,
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        textFromField(hintText: userModel.fullName),
+        SizedBox(
+          height: 10,
+        ),
+        textFromField(hintText: userModel.emailAddress),
+      ],
+    );
+  }
+
+  Widget editTextField() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              backgroundImage: AssetImage("images/non_profile.jpg"),
+              radius: 50,
+            ),
+          ],
+        ),
+        TextFormField(
+          decoration: InputDecoration(
+            hintText: userModel.fullName,
+          ),
+        ),
+        TextFormField(
+          decoration: InputDecoration(
+            hintText: userModel.emailAddress,
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        MyButton(
+          onPressed: () {},
+          text: "Up date",
+        )
+      ],
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        leading: isEdit
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    isEdit = false;
+                  });
+                },
+                icon: Icon(Icons.close),
+              )
+            : IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                ),
+              ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                isEdit = true;
+              });
+            },
             icon: Icon(Icons.edit),
           ),
         ],
@@ -37,26 +122,8 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: AssetImage("images/non_profile.jpg"),
-                          radius: 50,
-                        ),
-                      ],
-                    ),
-                    textFromField(hintText: userModel.fullName),
-                    textFromField(hintText: userModel.emailAddress),
-                  ],
-                ),
+                child: isEdit ? editTextField() : nonEditTextField(),
               ),
-              Expanded(
-                child: Container(),
-              )
             ],
           ),
         ),
