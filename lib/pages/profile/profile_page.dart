@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasteefood/pages/home/home_page.dart';
+import 'package:tasteefood/route/routing_page.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -11,6 +14,11 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool isEdit = false;
+
+  TextEditingController fullName =
+      TextEditingController(text: userModel.fullName);
+  TextEditingController emailAddress =
+      TextEditingController(text: userModel.emailAddress);
 
   Widget textFromField({required String hintText}) {
     return Container(
@@ -63,25 +71,45 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
         TextFormField(
-          decoration: InputDecoration(
-            hintText: userModel.fullName,
-          ),
+          controller: fullName,
+          decoration: InputDecoration(hintText: "fullName"),
         ),
         TextFormField(
+          controller: emailAddress,
           decoration: InputDecoration(
-            hintText: userModel.emailAddress,
+            hintText: "emailAddres",
           ),
         ),
         SizedBox(
           height: 10,
         ),
         MyButton(
-          onPressed: () {},
+          onPressed: () {
+            buildUpdateProfile();
+          },
           text: "Up date",
         )
       ],
     );
   }
+
+  Future buildUpdateProfile() async {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update(
+      {
+        "fullName": fullName.text,
+        "emailAdress": emailAddress.text,
+      },
+    ).then(
+      (value) => RoutingPage.goTonext(
+        context: context,
+        navigateTo: HomePage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
