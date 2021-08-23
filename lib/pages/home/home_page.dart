@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:tasteefood/appColors/app_colors.dart';
 import 'package:tasteefood/model/user_model.dart';
 import 'package:tasteefood/widgets/build_drawer.dart';
+import 'package:tasteefood/widgets/grid_view_widget.dart';
+import 'package:tasteefood/widgets/single_product.dart';
 
 late UserModel userModel;
 
@@ -70,7 +72,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
           Container(
             height: 100,
             child: StreamBuilder(
@@ -87,7 +88,19 @@ class _HomePageState extends State<HomePage> {
                   itemCount: streamSnapshort.data!.docs.length,
                   itemBuilder: (ctx, index) {
                     return Categories(
-                      categoryName: streamSnapshort.data!.docs[index]["categoryName"],
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => GridViewWidget(
+                              collection: streamSnapshort.data!.docs[index]
+                                  ["categoryName"],
+                              id: streamSnapshort.data!.docs[index].id,
+                            ),
+                          ),
+                        );
+                      },
+                      categoryName: streamSnapshort.data!.docs[index]
+                          ["categoryName"],
                       image: streamSnapshort.data!.docs[index]["categoryImage"],
                     );
                   },
@@ -109,8 +122,8 @@ class _HomePageState extends State<HomePage> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                SingleProduct(),
-                SingleProduct(),
+                // SingleProduct(),
+                // SingleProduct(),
               ],
             ),
           ),
@@ -128,8 +141,8 @@ class _HomePageState extends State<HomePage> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                SingleProduct(),
-                SingleProduct(),
+                // SingleProduct(),
+                // SingleProduct(),
               ],
             ),
           ),
@@ -139,76 +152,38 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class SingleProduct extends StatelessWidget {
-  const SingleProduct({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: EdgeInsets.all(12.0),
-          height: 200,
-          width: 150,
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "\$30",
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                "Copea flour",
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-        )
-      ],
-    );
-  }
-}
+
 
 class Categories extends StatelessWidget {
   final String image;
   final String categoryName;
-
+  final Function()? onTap;
   const Categories({
     Key? key,
+    required this.onTap,
     required this.categoryName,
     required this.image,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(12.0),
-      height: 100,
-      width: 150,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: NetworkImage(
-            image,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.all(12.0),
+        height: 100,
+        width: 150,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(
+              image,
+            ),
           ),
+          borderRadius: BorderRadius.circular(10),
         ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Center(
-        child: Text(categoryName),
+        child: Center(
+          child: Text(categoryName),
+        ),
       ),
     );
   }
