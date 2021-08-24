@@ -117,14 +117,28 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                // SingleProduct(),
-                // SingleProduct(),
-              ],
+          Container(
+            height: 280,
+            child: StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection("products").snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
+                if (!streamSnapshort.hasData) {
+                  return Center(child: const CircularProgressIndicator());
+                }
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: BouncingScrollPhysics(),
+                  itemCount: streamSnapshort.data!.docs.length,
+                  itemBuilder: (ctx, index) {
+                    return SingleProduct(
+                      name: streamSnapshort.data!.docs[index]["productName"],
+                      image: streamSnapshort.data!.docs[index]["productImage"],
+                      price: streamSnapshort.data!.docs[index]["productPrice"],
+                    );
+                  },
+                );
+              },
             ),
           ),
           ListTile(
@@ -151,8 +165,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
 
 class Categories extends StatelessWidget {
   final String image;
@@ -181,8 +193,20 @@ class Categories extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Center(
-          child: Text(categoryName),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.black.withOpacity(0.7),
+          ),
+          child: Center(
+            child: Text(
+              categoryName,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
       ),
     );

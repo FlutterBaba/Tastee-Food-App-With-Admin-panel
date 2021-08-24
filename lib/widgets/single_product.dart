@@ -14,7 +14,6 @@ class SingleProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           margin: EdgeInsets.all(12.0),
@@ -28,28 +27,25 @@ class SingleProduct extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "\$$price",
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              name,
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
               ),
-              SizedBox(
-                height: 5,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              "\$$price",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
               ),
-              Text(
-                name,
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         )
       ],
     );
