@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  
   Future getCurrentUserDataFunction() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     getCurrentUserDataFunction();
@@ -150,14 +151,34 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                // SingleProduct(),
-                // SingleProduct(),
-              ],
+          Container(
+            height: 280,
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("products")
+                  .where("productRate", isGreaterThan: 4)
+                  .orderBy(
+                    "productRate",
+                    descending: true,
+                  )
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
+                if (!streamSnapshort.hasData) {
+                  return Center(child: const CircularProgressIndicator());
+                }
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: BouncingScrollPhysics(),
+                  itemCount: streamSnapshort.data!.docs.length,
+                  itemBuilder: (ctx, index) {
+                    return SingleProduct(
+                      name: streamSnapshort.data!.docs[index]["productName"],
+                      image: streamSnapshort.data!.docs[index]["productImage"],
+                      price: streamSnapshort.data!.docs[index]["productPrice"],
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
