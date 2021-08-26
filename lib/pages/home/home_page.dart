@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tasteefood/appColors/app_colors.dart';
 import 'package:tasteefood/model/user_model.dart';
+import 'package:tasteefood/pages/detailPage/details_page.dart';
+import 'package:tasteefood/route/routing_page.dart';
 import 'package:tasteefood/widgets/build_drawer.dart';
 import 'package:tasteefood/widgets/grid_view_widget.dart';
 import 'package:tasteefood/widgets/single_product.dart';
@@ -17,7 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
   Future getCurrentUserDataFunction() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     getCurrentUserDataFunction();
@@ -133,6 +134,12 @@ class _HomePageState extends State<HomePage> {
                   itemCount: streamSnapshort.data!.docs.length,
                   itemBuilder: (ctx, index) {
                     return SingleProduct(
+                      onTap: () {
+                        RoutingPage.goTonext(
+                          context: context,
+                          navigateTo: DetailsPage(),
+                        );
+                      },
                       name: streamSnapshort.data!.docs[index]["productName"],
                       image: streamSnapshort.data!.docs[index]["productImage"],
                       price: streamSnapshort.data!.docs[index]["productPrice"],
@@ -172,6 +179,7 @@ class _HomePageState extends State<HomePage> {
                   itemCount: streamSnapshort.data!.docs.length,
                   itemBuilder: (ctx, index) {
                     return SingleProduct(
+                      onTap: () {},
                       name: streamSnapshort.data!.docs[index]["productName"],
                       image: streamSnapshort.data!.docs[index]["productImage"],
                       price: streamSnapshort.data!.docs[index]["productPrice"],
