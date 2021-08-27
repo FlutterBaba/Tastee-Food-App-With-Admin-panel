@@ -3,7 +3,18 @@ import 'package:tasteefood/appColors/app_colors.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class SecondPart extends StatelessWidget {
-  const SecondPart({Key? key}) : super(key: key);
+  final String productName;
+  final double productPrice;
+  final double productOldPrice;
+  final int productRate;
+
+  const SecondPart({
+    Key? key,
+    required this.productName,
+    required this.productPrice,
+    required this.productOldPrice,
+    required this.productRate,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +25,7 @@ class SecondPart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "ProductName",
+            productName,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -22,12 +33,12 @@ class SecondPart extends StatelessWidget {
           ),
           Row(
             children: [
-              Text("\$40"),
+              Text("\$$productPrice"),
               SizedBox(
                 width: 20,
               ),
               Text(
-                "\$50",
+                "\$$productOldPrice",
                 style: TextStyle(
                   decoration: TextDecoration.lineThrough,
                 ),
@@ -51,7 +62,7 @@ class SecondPart extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        "4.5",
+                        productRate.toString(),
                         style: TextStyle(
                           color: AppColors.KwhiteColor,
                         ),
