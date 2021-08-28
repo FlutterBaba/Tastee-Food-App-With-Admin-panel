@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tasteefood/appColors/app_colors.dart';
+import 'package:tasteefood/pages/detailPage/details_page.dart';
+import 'package:tasteefood/route/routing_page.dart';
 
 import 'single_product.dart';
 
@@ -63,9 +65,21 @@ class GridViewWidget extends StatelessWidget {
                   crossAxisSpacing: 20,
                 ),
                 itemBuilder: (context, index) {
-                  var data=snapshort.data!.docs[index];
+                  var data = snapshort.data!.docs[index];
                   return SingleProduct(
-                    onTap: (){},
+                    onTap: () {
+                      RoutingPage.goTonext(
+                        context: context,
+                        navigateTo: DetailsPage(
+                          productDescription: data["productDescription"],
+                          productImage: data["productImage"],
+                          productName: data["productName"],
+                          productOldPrice: data["productOldPrice"],
+                          productPrice: data["productPrice"],
+                          productRate: data["productRate"],
+                        ),
+                      );
+                    },
                     image: data["productImage"],
                     name: data["productName"],
                     price: data["productPrice"],

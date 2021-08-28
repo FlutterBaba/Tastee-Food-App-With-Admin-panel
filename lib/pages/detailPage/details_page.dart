@@ -9,9 +9,11 @@ class DetailsPage extends StatelessWidget {
   final double productPrice;
   final double productOldPrice;
   final int productRate;
+  final String productDescription;
 
   const DetailsPage({
     Key? key,
+    required this.productDescription,
     required this.productName,
     required this.productImage,
     required this.productPrice,
@@ -34,6 +36,7 @@ class DetailsPage extends StatelessWidget {
               productImage: productImage,
             ),
             SecondPart(
+              productDescription: productDescription,
               productName: productName,
               productOldPrice: productOldPrice,
               productPrice: productPrice,

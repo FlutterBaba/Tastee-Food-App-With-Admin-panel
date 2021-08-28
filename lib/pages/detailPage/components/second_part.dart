@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tasteefood/appColors/app_colors.dart';
+import 'package:tasteefood/pages/cartPage/cart_page.dart';
+import 'package:tasteefood/route/routing_page.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class SecondPart extends StatelessWidget {
@@ -7,9 +9,10 @@ class SecondPart extends StatelessWidget {
   final double productPrice;
   final double productOldPrice;
   final int productRate;
-
+  final String productDescription;
   const SecondPart({
     Key? key,
+    required this.productDescription,
     required this.productName,
     required this.productPrice,
     required this.productOldPrice,
@@ -89,11 +92,16 @@ class SecondPart extends StatelessWidget {
             ),
           ),
           Text(
-            "Yh Product Bhut Acha hain Is ko buy krle ap ko koi masla hua to hum wapas bhi kr le gy",
+            productDescription,
             style: TextStyle(),
           ),
           MyButton(
-            onPressed: () {},
+            onPressed: () {
+              RoutingPage.goTonext(
+                context: context,
+                navigateTo: CartPage(),
+              );
+            },
             text: "Add to Cart",
           ),
         ],
