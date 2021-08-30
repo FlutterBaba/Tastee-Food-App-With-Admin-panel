@@ -139,6 +139,7 @@ class _HomePageState extends State<HomePage> {
                         RoutingPage.goTonext(
                           context: context,
                           navigateTo: DetailsPage(
+                            productId: data["productId"],
                             productImage: data["productImage"],
                             productName: data["productName"],
                             productOldPrice: data["productOldPrice"],
@@ -192,6 +193,7 @@ class _HomePageState extends State<HomePage> {
                         RoutingPage.goTonext(
                           context: context,
                           navigateTo: DetailsPage(
+                            productId: data["productId"],
                             productDescription: data["productDescription"],
                             productImage: data["productImage"],
                             productName: data["productName"],

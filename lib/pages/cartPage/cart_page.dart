@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 
 class CartPage extends StatelessWidget {
+  
   const CartPage({Key? key}) : super(key: key);
 
   @override
