@@ -14,8 +14,10 @@ class SecondPart extends StatelessWidget {
   final String productDescription;
   final String productId;
   final String productImage;
+  final String productCategory;
   const SecondPart({
     Key? key,
+    required this.productCategory,
     required this.productImage,
     required this.productId,
     required this.productDescription,
@@ -118,6 +120,7 @@ class SecondPart extends StatelessWidget {
                   "productRate": productRate,
                   "productDescription": productDescription,
                   "productQuantity": 1,
+                  "productCategory": productCategory,
                 },
               );
               RoutingPage.goTonext(

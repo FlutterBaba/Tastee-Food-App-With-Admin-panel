@@ -6,6 +6,7 @@ import 'package:tasteefood/pages/detailPage/components/top_part.dart';
 class DetailsPage extends StatelessWidget {
   final String productImage;
   final String productName;
+  final String productCategory;
   final double productPrice;
   final String productId;
   final double productOldPrice;
@@ -14,6 +15,7 @@ class DetailsPage extends StatelessWidget {
 
   const DetailsPage({
     Key? key,
+    required this.productCategory,
     required this.productId,
     required this.productDescription,
     required this.productName,
@@ -38,6 +40,7 @@ class DetailsPage extends StatelessWidget {
               productImage: productImage,
             ),
             SecondPart(
+              productCategory: productCategory,
               productImage: productImage,
               productId: productId,
               productDescription: productDescription,
