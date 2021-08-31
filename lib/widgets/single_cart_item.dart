@@ -1,19 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SingleCartItem extends StatelessWidget {
+class SingleCartItem extends StatefulWidget {
   final String productImage;
   final String productName;
   final double productPrice;
   final int productQuantity;
+  final String productCategory;
+  final String productId;
 
   const SingleCartItem({
     Key? key,
+    required this.productId,
+    required this.productCategory,
     required this.productImage,
     required this.productPrice,
     required this.productQuantity,
     required this.productName,
   }) : super(key: key);
 
+  @override
+  _SingleCartItemState createState() => _SingleCartItemState();
+}
+
+class _SingleCartItemState extends State<SingleCartItem> {
+  int quantity = 1;
+
+  void quantityFuntion() {
+    FirebaseFirestore.instance
+        .collection("cart")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("userCart")
+        .doc(widget.productId)
+        .update({
+      "productQuantity": quantity,
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,62 +52,84 @@ class SingleCartItem extends StatelessWidget {
           )
         ],
       ),
-      child: Row(
+      child: Stack(
+        alignment: Alignment.topRight,
         children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(productImage),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(widget.productImage),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    productName,
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                  Text(
-                    "Food",
-                  ),
-                  Text(
-                    "\$ $productPrice",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Row(
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      IncrementAndDecrement(
-                        icon: Icons.add,
-                        onPressed: () {},
-                      ),
                       Text(
-                        productQuantity.toString(),
+                        widget.productName,
                         style: TextStyle(
                           fontSize: 18,
-
                         ),
                       ),
-                      IncrementAndDecrement(
-                        icon: Icons.remove,
-                        onPressed: () {},
+                      Text(
+                        widget.productCategory,
                       ),
+                      Text(
+                        "\$ ${widget.productPrice * widget.productQuantity}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IncrementAndDecrement(
+                            icon: Icons.add,
+                            onPressed: () {
+                              setState(() {
+                                quantity++;
+                                quantityFuntion();
+                              });
+                            },
+                          ),
+                          Text(
+                            widget.productQuantity.toString(),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          IncrementAndDecrement(
+                            icon: Icons.remove,
+                            onPressed: () {
+                              if (quantity > 1) {
+                                setState(() {
+                                  quantity--;
+                                  quantityFuntion();
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      )
                     ],
-                  )
-                ],
-              ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.close,
             ),
           )
         ],
