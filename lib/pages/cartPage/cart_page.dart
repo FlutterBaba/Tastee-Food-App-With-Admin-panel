@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 import 'package:tasteefood/widgets/single_cart_item.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
 
+  @override
+  _CartPageState createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,20 +33,24 @@ class CartPage extends StatelessWidget {
           if (!streamSnapshort.hasData) {
             return Center(child: const CircularProgressIndicator());
           }
-          return ListView.builder(
-            physics: BouncingScrollPhysics(),
-            itemCount: streamSnapshort.data!.docs.length,
-            itemBuilder: (ctx, index) {
-              var data = streamSnapshort.data!.docs[index];
-              return SingleCartItem(
-                productId: data["productId"],
-                productCategory: data["productCategory"],
-                productImage: data["productImage"],
-                productPrice: data["productPrice"],
-                productQuantity: data["productQuantity"],
-                productName: data["productName"],
-              );
-            },
+          return streamSnapshort.data!.docs.isEmpty 
+              ? Center(
+                  child: Text(" No Cart"),
+                )
+              : ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: streamSnapshort.data!.docs.length,
+                  itemBuilder: (ctx, index) {
+                    var data = streamSnapshort.data!.docs[index];
+                    return SingleCartItem(
+                      productId: data["productId"],
+                      productCategory: data["productCategory"],
+                      productImage: data["productImage"],
+                      productPrice: data["productPrice"],
+                      productQuantity: data["productQuantity"],
+                      productName: data["productName"],
+                    );
+                  },
           );
         },
       ),
