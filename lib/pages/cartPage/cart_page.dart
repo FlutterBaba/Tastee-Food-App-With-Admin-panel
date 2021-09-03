@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tasteefood/pages/checkout/check_out_page.dart';
+import 'package:tasteefood/route/routing_page.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 import 'package:tasteefood/widgets/single_cart_item.dart';
 
@@ -17,7 +19,12 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       bottomNavigationBar: MyButton(
         text: "Check Out",
-        onPressed: () {},
+        onPressed: () {
+          RoutingPage.goTonext(
+            context: context,
+            navigateTo: CheckOutPage(),
+          );
+        },
       ),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -33,7 +40,7 @@ class _CartPageState extends State<CartPage> {
           if (!streamSnapshort.hasData) {
             return Center(child: const CircularProgressIndicator());
           }
-          return streamSnapshort.data!.docs.isEmpty 
+          return streamSnapshort.data!.docs.isEmpty
               ? Center(
                   child: Text(" No Cart"),
                 )
@@ -51,7 +58,7 @@ class _CartPageState extends State<CartPage> {
                       productName: data["productName"],
                     );
                   },
-          );
+                );
         },
       ),
     );
