@@ -37,6 +37,16 @@ class _SingleCartItemState extends State<SingleCartItem> {
       "productQuantity": quantity,
     });
   }
+
+  void deleteProductFuntion() {
+    FirebaseFirestore.instance
+        .collection("cart")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("userCart")
+        .doc(widget.productId)
+        .delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -127,7 +137,9 @@ class _SingleCartItemState extends State<SingleCartItem> {
             ],
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              deleteProductFuntion();
+            },
             icon: Icon(
               Icons.close,
             ),
