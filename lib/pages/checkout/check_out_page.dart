@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tasteefood/appColors/app_colors.dart';
+import 'package:tasteefood/pages/provider/cart_provider.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 import 'package:tasteefood/widgets/single_cart_item.dart';
 
@@ -10,6 +12,8 @@ class CheckOutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CartProvider cartProvider = Provider.of<CartProvider>(context);
+    cartProvider.getCartData();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -25,37 +29,25 @@ class CheckOutPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("cart")
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .collection("userCart")
-                  .snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
-                if (!streamSnapshort.hasData) {
-                  return Center(child: const CircularProgressIndicator());
-                }
-                return streamSnapshort.data!.docs.isEmpty
-                    ? Center(
-                        child: Text(" No Cart"),
-                      )
-                    : ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        itemCount: streamSnapshort.data!.docs.length,
-                        itemBuilder: (ctx, index) {
-                          var data = streamSnapshort.data!.docs[index];
-                          return SingleCartItem(
-                            productId: data["productId"],
-                            productCategory: data["productCategory"],
-                            productImage: data["productImage"],
-                            productPrice: data["productPrice"],
-                            productQuantity: data["productQuantity"],
-                            productName: data["productName"],
-                          );
-                        },
+            child: cartProvider.getCartList.isEmpty
+                ? Center(
+                    child: Text("No Product"),
+                  )
+                : ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: cartProvider.getCartList.length,
+                    itemBuilder: (ctx, index) {
+                      var data = cartProvider.cartList[index];
+                      return SingleCartItem(
+                        productId: data.productId,
+                        productCategory: data.productCategory,
+                        productImage: data.productImage,
+                        productPrice: data.productPrice,
+                        productQuantity: data.productQuantity,
+                        productName: data.productName,
                       );
-              },
-            ),
+                    },
+                  ),
           ),
           Expanded(
             child: Column(
@@ -79,10 +71,12 @@ class CheckOutPage extends StatelessWidget {
                   leading: Text("Total"),
                   trailing: Text("\$500"),
                 ),
-                MyButton(
-                  onPressed: () => print("button"),
-                  text: "Buy",
-                ),
+                cartProvider.getCartList.isEmpty
+                    ? Text("")
+                    : MyButton(
+                        onPressed: () => print("button"),
+                        text: "Buy",
+                      ),
               ],
             ),
           )
