@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tasteefood/appColors/app_colors.dart';
@@ -7,13 +5,36 @@ import 'package:tasteefood/pages/provider/cart_provider.dart';
 import 'package:tasteefood/widgets/my_button.dart';
 import 'package:tasteefood/widgets/single_cart_item.dart';
 
-class CheckOutPage extends StatelessWidget {
+class CheckOutPage extends StatefulWidget {
   const CheckOutPage({Key? key}) : super(key: key);
 
+  @override
+  _CheckOutPageState createState() => _CheckOutPageState();
+}
+
+class _CheckOutPageState extends State<CheckOutPage> {
   @override
   Widget build(BuildContext context) {
     CartProvider cartProvider = Provider.of<CartProvider>(context);
     cartProvider.getCartData();
+
+    double subTotal = cartProvider.subTotal();
+
+    double discount = 5;
+    int shipping = 10;
+
+    double discountValue = (subTotal * discount) / 100;
+
+    double value = subTotal - discountValue;
+
+    double totalPrice = value += shipping;
+
+    if (cartProvider.getCartList.isEmpty) {
+      setState(() {
+        totalPrice = 0.0;
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -53,8 +74,8 @@ class CheckOutPage extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: Text("Sub Title"),
-                  trailing: Text("\$123"),
+                  leading: Text("Sub Total"),
+                  trailing: Text("\$ $subTotal"),
                 ),
                 ListTile(
                   leading: Text("Discount"),
@@ -69,7 +90,7 @@ class CheckOutPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: Text("Total"),
-                  trailing: Text("\$500"),
+                  trailing: Text("\$ $totalPrice"),
                 ),
                 cartProvider.getCartList.isEmpty
                     ? Text("")
