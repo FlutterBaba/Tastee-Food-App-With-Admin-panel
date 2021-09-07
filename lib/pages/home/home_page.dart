@@ -150,9 +150,13 @@ class _HomePageState extends State<HomePage> {
                           ),
                         );
                       },
-                      name: data["productName"],
-                      image: data["productImage"],
-                      price: data["productPrice"],
+                      productId: data["productId"],
+                      productCategory: data["productCategory"],
+                      productRate: data["productRate"],
+                      productOldPrice: data["productOldPrice"],
+                      productPrice: data["productPrice"],
+                      productImage: data["productImage"],
+                      productName: data["productName"],
                     );
                   },
                 );
@@ -205,9 +209,13 @@ class _HomePageState extends State<HomePage> {
                           ),
                         );
                       },
-                      name: data["productName"],
-                      image: data["productImage"],
-                      price: data["productPrice"],
+                      productId: data["productId"],
+                      productCategory: data["productCategory"],
+                      productRate: data["productRate"],
+                      productOldPrice: data["productOldPrice"],
+                      productPrice: data["productPrice"],
+                      productImage: data["productImage"],
+                      productName: data["productName"],
                     );
                   },
                 );

@@ -82,9 +82,13 @@ class GridViewWidget extends StatelessWidget {
                         ),
                       );
                     },
-                    image: data["productImage"],
-                    name: data["productName"],
-                    price: data["productPrice"],
+                    productId: data["productId"],
+                    productCategory: data["productCategory"],
+                    productRate: data["productRate"],
+                    productOldPrice: data["productOldPrice"],
+                    productPrice: data["productPrice"],
+                    productImage: data["productImage"],
+                    productName: data["productName"],
                   );
                 },
               ),

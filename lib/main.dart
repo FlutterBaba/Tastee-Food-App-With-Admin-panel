@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tasteefood/pages/home/home_page.dart';
 import 'package:tasteefood/pages/login/components/login_auth_provider.dart';
 import 'package:tasteefood/pages/provider/cart_provider.dart';
+import 'package:tasteefood/pages/provider/favorite_provider.dart';
 import 'package:tasteefood/pages/signup/components/signup_auth_provider.dart';
 import 'package:tasteefood/pages/welcome/welcome_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => CartProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => FavoriteProvider(),
         ),
       ],
       child: MaterialApp(
