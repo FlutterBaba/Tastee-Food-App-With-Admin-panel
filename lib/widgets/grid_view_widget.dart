@@ -9,9 +9,11 @@ import 'single_product.dart';
 class GridViewWidget extends StatelessWidget {
   final String id;
   final String collection;
+  final String subCollection;
 
   const GridViewWidget({
     Key? key,
+    required this.subCollection,
     required this.id,
     required this.collection,
   }) : super(key: key);
@@ -23,12 +25,12 @@ class GridViewWidget extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: FutureBuilder(
-        future: FirebaseFirestore.instance
-            .collection("categories")
-            .doc(id)
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
             .collection(collection)
-            .get(),
+            .doc(id)
+            .collection(subCollection)
+            .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshort) {
           if (!snapshort.hasData) {
             return Center(
@@ -55,43 +57,45 @@ class GridViewWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              GridView.builder(
-                shrinkWrap: true,
-                itemCount: snapshort.data!.docs.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  childAspectRatio: 0.4,
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 20,
-                  crossAxisSpacing: 20,
-                ),
-                itemBuilder: (context, index) {
-                  var data = snapshort.data!.docs[index];
-                  return SingleProduct(
-                    onTap: () {
-                      RoutingPage.goTonext(
-                        context: context,
-                        navigateTo: DetailsPage(
-                          productCategory: data["productCategory"],
+              snapshort.data!.docs.isEmpty
+                  ? Text("No Item")
+                  : GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshort.data!.docs.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 0.4,
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 20,
+                      ),
+                      itemBuilder: (context, index) {
+                        var data = snapshort.data!.docs[index];
+                        return SingleProduct(
+                          onTap: () {
+                            RoutingPage.goTonext(
+                              context: context,
+                              navigateTo: DetailsPage(
+                                productCategory: data["productCategory"],
+                                productId: data["productId"],
+                                productDescription: data["productDescription"],
+                                productImage: data["productImage"],
+                                productName: data["productName"],
+                                productOldPrice: data["productOldPrice"],
+                                productPrice: data["productPrice"],
+                                productRate: data["productRate"],
+                              ),
+                            );
+                          },
                           productId: data["productId"],
-                          productDescription: data["productDescription"],
-                          productImage: data["productImage"],
-                          productName: data["productName"],
+                          productCategory: data["productCategory"],
+                          productRate: data["productRate"],
                           productOldPrice: data["productOldPrice"],
                           productPrice: data["productPrice"],
-                          productRate: data["productRate"],
-                        ),
-                      );
-                    },
-                    productId: data["productId"],
-                    productCategory: data["productCategory"],
-                    productRate: data["productRate"],
-                    productOldPrice: data["productOldPrice"],
-                    productPrice: data["productPrice"],
-                    productImage: data["productImage"],
-                    productName: data["productName"],
-                  );
-                },
-              ),
+                          productImage: data["productImage"],
+                          productName: data["productName"],
+                        );
+                      },
+                    ),
             ],
           );
         },

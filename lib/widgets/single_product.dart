@@ -92,12 +92,8 @@ class _SingleProductState extends State<SingleProduct> {
                         productName: widget.productName,
                       );
                     } else if (isFavorite == false) {
-                      FirebaseFirestore.instance
-                          .collection("favorite")
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .collection("userFavorite")
-                          .doc(widget.productId)
-                          .delete();
+                      favoriteProvider.deleteFavorite(
+                          productId: widget.productId);
                     }
                   },
                 );

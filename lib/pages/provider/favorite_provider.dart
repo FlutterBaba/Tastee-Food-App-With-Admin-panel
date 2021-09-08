@@ -31,4 +31,14 @@ class FavoriteProvider with ChangeNotifier {
       },
     );
   }
+
+  deleteFavorite({required String productId}) {
+    FirebaseFirestore.instance
+        .collection("favorite")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("userFavorite")
+        .doc(productId)
+        .delete();
+    notifyListeners();
+  }
 }
