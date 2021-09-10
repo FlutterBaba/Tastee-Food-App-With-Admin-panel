@@ -31,6 +31,7 @@ dependencies:
   provider: ^5.0.0
   firebase_auth: ^3.0.1
   cloud_firestore: ^2.4.0
+  razorpay_flutter: ^1.2.3
   
 dev_dependencies:
   flutter_test:
