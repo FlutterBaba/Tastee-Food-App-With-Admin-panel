@@ -19,6 +19,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String query = "";
+  var result;
+  searchFunction(query, searchList) {
+    result = searchList.where((element) {
+      return element["productName"].toUpperCase().contains(query) ||
+          element["productName"].toLowerCase().contains(query) ||
+          element["productName"].toUpperCase().contains(query) &&
+              element["productName"].toLowerCase().contains(query);
+    }).toList();
+    return result;
+  }
+
   Future getCurrentUserDataFunction() async {
     await FirebaseFirestore.instance
         .collection("users")
@@ -32,6 +44,108 @@ class _HomePageState extends State<HomePage> {
           print("Document does not exist the database");
         }
       },
+    );
+  }
+
+  Widget buildCategory() {
+    return Column(
+      children: [
+        ListTile(
+          leading: Text(
+            "Categories",
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+        Container(
+          height: 100,
+          child: StreamBuilder(
+            stream:
+                FirebaseFirestore.instance.collection("categories").snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
+              if (!streamSnapshort.hasData) {
+                return Center(child: const CircularProgressIndicator());
+              }
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+                itemCount: streamSnapshort.data!.docs.length,
+                itemBuilder: (ctx, index) {
+                  return Categories(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => GridViewWidget(
+                            subCollection: streamSnapshort.data!.docs[index]
+                                ["categoryName"],
+                            collection: "categories",
+                            id: streamSnapshort.data!.docs[index].id,
+                          ),
+                        ),
+                      );
+                    },
+                    categoryName: streamSnapshort.data!.docs[index]
+                        ["categoryName"],
+                    image: streamSnapshort.data!.docs[index]["categoryImage"],
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildProduct(
+      {required Stream<QuerySnapshot<Map<String, dynamic>>>? stream}) {
+    return Container(
+      height: 280,
+      child: StreamBuilder(
+        stream: stream,
+        builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
+          if (!streamSnapshort.hasData) {
+            return Center(child: const CircularProgressIndicator());
+          }
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: BouncingScrollPhysics(),
+            itemCount: streamSnapshort.data!.docs.length,
+            itemBuilder: (ctx, index) {
+              var varData = searchFunction(query, streamSnapshort.data!.docs);
+              var data = varData[index];
+              // var data = streamSnapshort.data!.docs[index];
+              return SingleProduct(
+                onTap: () {
+                  RoutingPage.goTonext(
+                    context: context,
+                    navigateTo: DetailsPage(
+                      productCategory: data["productCategory"],
+                      productId: data["productId"],
+                      productImage: data["productImage"],
+                      productName: data["productName"],
+                      productOldPrice: data["productOldPrice"],
+                      productPrice: data["productPrice"],
+                      productRate: data["productRate"],
+                      productDescription: data["productDescription"],
+                    ),
+                  );
+                },
+                productId: data["productId"],
+                productCategory: data["productCategory"],
+                productRate: data["productRate"],
+                productOldPrice: data["productOldPrice"],
+                productPrice: data["productPrice"],
+                productImage: data["productImage"],
+                productName: data["productName"],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -52,6 +166,11 @@ class _HomePageState extends State<HomePage> {
               elevation: 7,
               shadowColor: Colors.grey[300],
               child: TextFormField(
+                onChanged: (value) {
+                  setState(() {
+                    query = value;
+                  });
+                },
                 decoration: InputDecoration(
                   prefixIcon: Icon(Icons.search),
                   fillColor: AppColors.KwhiteColor,
@@ -64,165 +183,102 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          ListTile(
-            leading: Text(
-              "Categories",
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ),
-          Container(
-            height: 100,
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("categories")
-                  .snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
-                if (!streamSnapshort.hasData) {
-                  return Center(child: const CircularProgressIndicator());
-                }
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  physics: BouncingScrollPhysics(),
-                  itemCount: streamSnapshort.data!.docs.length,
-                  itemBuilder: (ctx, index) {
-                    return Categories(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => GridViewWidget(
-                              subCollection: streamSnapshort.data!.docs[index]
-                                  ["categoryName"],
-                              collection: "categories",
-                              id: streamSnapshort.data!.docs[index].id,
-                            ),
-                          ),
-                        );
-                      },
-                      categoryName: streamSnapshort.data!.docs[index]
-                          ["categoryName"],
-                      image: streamSnapshort.data!.docs[index]["categoryImage"],
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          ListTile(
-            leading: Text(
-              "Products",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ),
-          Container(
-            height: 280,
-            child: StreamBuilder(
-              stream:
-                  FirebaseFirestore.instance.collection("products").snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
-                if (!streamSnapshort.hasData) {
-                  return Center(child: const CircularProgressIndicator());
-                }
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  physics: BouncingScrollPhysics(),
-                  itemCount: streamSnapshort.data!.docs.length,
-                  itemBuilder: (ctx, index) {
-                    var data = streamSnapshort.data!.docs[index];
-                    return SingleProduct(
-                      onTap: () {
-                        RoutingPage.goTonext(
-                          context: context,
-                          navigateTo: DetailsPage(
-                            productCategory: data["productCategory"],
-                            productId: data["productId"],
-                            productImage: data["productImage"],
-                            productName: data["productName"],
-                            productOldPrice: data["productOldPrice"],
-                            productPrice: data["productPrice"],
-                            productRate: data["productRate"],
-                            productDescription: data["productDescription"],
-                          ),
-                        );
-                      },
-                      productId: data["productId"],
-                      productCategory: data["productCategory"],
-                      productRate: data["productRate"],
-                      productOldPrice: data["productOldPrice"],
-                      productPrice: data["productPrice"],
-                      productImage: data["productImage"],
-                      productName: data["productName"],
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          ListTile(
-            leading: Text(
-              "Best Sell",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ),
-          Container(
-            height: 280,
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("products")
-                  .where("productRate", isGreaterThan: 4)
-                  .orderBy(
-                    "productRate",
-                    descending: true,
-                  )
-                  .snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
-                if (!streamSnapshort.hasData) {
-                  return Center(child: const CircularProgressIndicator());
-                }
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  physics: BouncingScrollPhysics(),
-                  itemCount: streamSnapshort.data!.docs.length,
-                  itemBuilder: (ctx, index) {
-                    var data = streamSnapshort.data!.docs[index];
-                    return SingleProduct(
-                      onTap: () {
-                        RoutingPage.goTonext(
-                          context: context,
-                          navigateTo: DetailsPage(
-                            productCategory: data["productCategory"],
-                            productId: data["productId"],
-                            productDescription: data["productDescription"],
-                            productImage: data["productImage"],
-                            productName: data["productName"],
-                            productOldPrice: data["productOldPrice"],
-                            productPrice: data["productPrice"],
-                            productRate: data["productRate"],
-                          ),
-                        );
-                      },
-                      productId: data["productId"],
-                      productCategory: data["productCategory"],
-                      productRate: data["productRate"],
-                      productOldPrice: data["productOldPrice"],
-                      productPrice: data["productPrice"],
-                      productImage: data["productImage"],
-                      productName: data["productName"],
-                    );
-                  },
-                );
-              },
-            ),
-          ),
+          query == ""
+              ? Column(
+                  children: [
+                    buildCategory(),
+                    ListTile(
+                      leading: Text(
+                        "Products",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    buildProduct(
+                      stream: FirebaseFirestore.instance
+                          .collection("products")
+                          .snapshots(),
+                    ),
+                    ListTile(
+                      leading: Text(
+                        "Best Sell",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    buildProduct(
+                      stream: FirebaseFirestore.instance
+                          .collection("products")
+                          .where("productRate", isGreaterThan: 4)
+                          .orderBy(
+                            "productRate",
+                            descending: true,
+                          )
+                          .snapshots(),
+                    ),
+                  ],
+                )
+              : Container(
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("products")
+                        .snapshots(),
+                    builder: (context,
+                        AsyncSnapshot<QuerySnapshot> streamSnapshort) {
+                      if (!streamSnapshort.hasData) {
+                        return Center(child: const CircularProgressIndicator());
+                      }
+                      var varData =
+                          searchFunction(query, streamSnapshort.data!.docs);
+                      return result.isEmpty
+                          ? Text("Not Found")
+                          : GridView.builder(
+                              shrinkWrap: true,
+                              itemCount: result.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 5.0,
+                                mainAxisSpacing: 5.0,
+                                childAspectRatio: 0.6,
+                              ),
+                              itemBuilder: (ctx, index) {
+                                var data = varData[index];
+                                return SingleProduct(
+                                  onTap: () {
+                                    RoutingPage.goTonext(
+                                      context: context,
+                                      navigateTo: DetailsPage(
+                                        productCategory:
+                                            data["productCategory"],
+                                        productId: data["productId"],
+                                        productImage: data["productImage"],
+                                        productName: data["productName"],
+                                        productOldPrice:
+                                            data["productOldPrice"],
+                                        productPrice: data["productPrice"],
+                                        productRate: data["productRate"],
+                                        productDescription:
+                                            data["productDescription"],
+                                      ),
+                                    );
+                                  },
+                                  productId: data["productId"],
+                                  productCategory: data["productCategory"],
+                                  productRate: data["productRate"],
+                                  productOldPrice: data["productOldPrice"],
+                                  productPrice: data["productPrice"],
+                                  productImage: data["productImage"],
+                                  productName: data["productName"],
+                                );
+                              });
+                    },
+                  ),
+                ),
         ],
       ),
     );
