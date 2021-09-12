@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
                       var varData =
                           searchFunction(query, streamSnapshort.data!.docs);
                       return result.isEmpty
-                          ? Text("Not Found")
+                          ? Center(child: Text("Not Found"))
                           : GridView.builder(
                               shrinkWrap: true,
                               itemCount: result.length,
@@ -275,7 +275,8 @@ class _HomePageState extends State<HomePage> {
                                   productImage: data["productImage"],
                                   productName: data["productName"],
                                 );
-                              });
+                              },
+                            );
                     },
                   ),
                 ),

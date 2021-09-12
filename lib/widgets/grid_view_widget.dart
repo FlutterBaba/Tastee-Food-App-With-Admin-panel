@@ -6,7 +6,7 @@ import 'package:tasteefood/route/routing_page.dart';
 
 import 'single_product.dart';
 
-class GridViewWidget extends StatelessWidget {
+class GridViewWidget extends StatefulWidget {
   final String id;
   final String collection;
   final String subCollection;
@@ -17,9 +17,27 @@ class GridViewWidget extends StatelessWidget {
     required this.id,
     required this.collection,
   }) : super(key: key);
+
+  @override
+  _GridViewWidgetState createState() => _GridViewWidgetState();
+}
+
+class _GridViewWidgetState extends State<GridViewWidget> {
+  String query = "";
+  var result;
+  searchFunction(query, searchList) {
+    result = searchList.where((element) {
+      return element["productName"].toUpperCase().contains(query) ||
+          element["productName"].toLowerCase().contains(query) ||
+          element["productName"].toUpperCase().contains(query) &&
+              element["productName"].toLowerCase().contains(query);
+    }).toList();
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(id);
+    print(widget.id);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -27,9 +45,9 @@ class GridViewWidget extends StatelessWidget {
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
-            .collection(collection)
-            .doc(id)
-            .collection(subCollection)
+            .collection(widget.collection)
+            .doc(widget.id)
+            .collection(widget.subCollection)
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshort) {
           if (!snapshort.hasData) {
@@ -37,6 +55,7 @@ class GridViewWidget extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
+          var varData = searchFunction(query, snapshort.data!.docs);
           return Column(
             children: [
               Padding(
@@ -45,6 +64,11 @@ class GridViewWidget extends StatelessWidget {
                   elevation: 7,
                   shadowColor: Colors.grey[300],
                   child: TextFormField(
+                    onChanged: (value) {
+                      setState(() {
+                        query = value;
+                      });
+                    },
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       fillColor: AppColors.KwhiteColor,
@@ -57,19 +81,19 @@ class GridViewWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              snapshort.data!.docs.isEmpty
-                  ? Text("No Item")
+              result.isEmpty
+                  ? Text("Not Found")
                   : GridView.builder(
                       shrinkWrap: true,
-                      itemCount: snapshort.data!.docs.length,
+                      itemCount: result.length,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 0.4,
                         crossAxisCount: 2,
-                        mainAxisSpacing: 20,
-                        crossAxisSpacing: 20,
+                        crossAxisSpacing: 5.0,
+                        mainAxisSpacing: 5.0,
+                        childAspectRatio: 0.6,
                       ),
-                      itemBuilder: (context, index) {
-                        var data = snapshort.data!.docs[index];
+                      itemBuilder: (ctx, index) {
+                        var data = varData[index];
                         return SingleProduct(
                           onTap: () {
                             RoutingPage.goTonext(
@@ -77,12 +101,12 @@ class GridViewWidget extends StatelessWidget {
                               navigateTo: DetailsPage(
                                 productCategory: data["productCategory"],
                                 productId: data["productId"],
-                                productDescription: data["productDescription"],
                                 productImage: data["productImage"],
                                 productName: data["productName"],
                                 productOldPrice: data["productOldPrice"],
                                 productPrice: data["productPrice"],
                                 productRate: data["productRate"],
+                                productDescription: data["productDescription"],
                               ),
                             );
                           },
