@@ -11,6 +11,8 @@ import 'package:tasteefood/widgets/single_product.dart';
 
 late UserModel userModel;
 
+Size? size;
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -61,7 +63,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Container(
-          height: 100,
+          height: size!.height * 0.1 + 20,
           child: StreamBuilder(
             stream:
                 FirebaseFirestore.instance.collection("categories").snapshots(),
@@ -103,7 +105,7 @@ class _HomePageState extends State<HomePage> {
   Widget buildProduct(
       {required Stream<QuerySnapshot<Map<String, dynamic>>>? stream}) {
     return Container(
-      height: 280,
+      height: size!.height/3+40,
       child: StreamBuilder(
         stream: stream,
         builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshort) {
@@ -151,6 +153,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     getCurrentUserDataFunction();
     return Scaffold(
       drawer: BuildDrawer(),
@@ -279,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                             );
                     },
                   ),
-            ),
+                ),
         ],
       ),
     );
@@ -302,8 +305,7 @@ class Categories extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.all(12.0),
-        height: 100,
-        width: 150,
+        width: size!.width / 2 - 20,
         decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,

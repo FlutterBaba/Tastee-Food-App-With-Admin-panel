@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tasteefood/pages/home/home_page.dart';
 import 'package:tasteefood/pages/provider/favorite_provider.dart';
 
 class SingleProduct extends StatefulWidget {
@@ -63,8 +64,8 @@ class _SingleProductState extends State<SingleProduct> {
           Container(
             margin: EdgeInsets.all(12.0),
             alignment: Alignment.topRight,
-            height: 200,
-            width: 150,
+            height:size!.height*0.3,
+            width: size!.width / 2 - 20,
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
